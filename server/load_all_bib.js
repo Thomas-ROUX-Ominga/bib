@@ -4,7 +4,7 @@ async function scrape (searchLink, i) {
   try {
     var restaurant = await bib_list.scrapeRi(searchLink, i);
 
-    //console.log(restaurant);
+    console.log(restaurant);
     process.exit(0);
   } catch (e) {
   	console.log('ERROR');
