@@ -1,6 +1,7 @@
 const cheerio = require('cheerio');
 const rp = require('request-promise');
 const fs = require('fs');
+const michelin = require('./server/michelin');
 var restaurants_link = []
 
 for (let n = 1; n<16; n++)
@@ -18,19 +19,22 @@ for (let n = 1; n<16; n++)
 
 		while((i<=41)&&($('body > main > section.section-main.search-results.search-listing-result > div > div > div.row.restaurant__list-row.js-toggle-result.js-geolocation > div:nth-child('+i+') > div > a').attr("href") != undefined))
 		{
-			var url = $('body > main > section.section-main.search-results.search-listing-result > div > div > div.row.restaurant__list-row.js-toggle-result.js-geolocation > div:nth-child('+i+') > div > a').attr("href");
-			restaurants_link.push(url);
-			fs.appendFile('links.txt',url+'\n', (err) => {
-				if (err) throw err;
-				//console.log("File saved !");
-			});
+			if (i!=9)
+			{
+				var url = $('body > main > section.section-main.search-results.search-listing-result > div > div > div.row.restaurant__list-row.js-toggle-result.js-geolocation > div:nth-child('+i+') > div > a').attr("href");
+				restaurants_link.push(url);
+				fs.appendFile('links.txt',url+'\n', (err) => {
+					if (err) throw err;
+					//console.log("File saved !");
+				});
+			}
 			i++;
 		}
 	});
 }
 
 console.log(restaurants_link);
-
+/*
 for (const link of restaurants_link)
 {
 	rp({
@@ -51,4 +55,4 @@ for (const link of restaurants_link)
 				console.log("File saved !");
 			});
 	});
-}
+}*/
