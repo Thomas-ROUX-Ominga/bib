@@ -33,7 +33,6 @@ for (let n = 1; n<16; n++)
 	});
 }
 
-console.log(restaurants_link);
 /*
 for (const link of restaurants_link)
 {

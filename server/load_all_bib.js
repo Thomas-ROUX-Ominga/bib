@@ -4,7 +4,6 @@ async function scrape (searchLink, i) {
   try {
     var restaurant = await bib_list.scrapeRi(searchLink, i);
 
-    console.log(restaurant);
     process.exit(0);
   } catch (e) {
   	console.log('ERROR');
@@ -22,8 +21,6 @@ for (let n = 1; n<16; n++){
 		}
 	}
 	else{
-		for (let i=1; i<4; i++){
-			scrape(url, i);
+			scrape(url, 1);
 		}
-	}
 }
