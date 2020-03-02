@@ -3,6 +3,7 @@ var axios = require('axios');
 var cheerio = require('cheerio');
 var bibs = [];
 var mrs = [];
+var interRest = [];
 
 
 async function scrapeBIB(n) {
@@ -11,18 +12,22 @@ async function scrapeBIB(n) {
 
   $('body > main > section.section-main.search-results.search-listing-result > div > div > div.row.restaurant__list-row.js-toggle-result.js-geolocation.js-restaurant__list_items').children().each((i, elem) => {
     if (i <= 39) {
-      bibs.push({
-        name: $(elem).find('h5').text().trim().toLowerCase(),
-        city: $(elem).find('div.card__menu-footer--location.flex-fill.pl-text').text().trim().toLowerCase()
-      })
+      let name = $(elem).find('h5').text().trim();
+      let city = $(elem).find('div.card__menu-footer--location.flex-fill.pl-text').text().trim();
+      if ((name != '')&&(city != '')){
+        bibs.push({
+        name: name.toLowerCase(),
+        city: city.toLowerCase()
+        })
+      }
     }
-    console.log(bibs);
+    //console.log(bibs);
   });
 }
 
 async function scrapeAllBIB(){
   for (let n = 1; n<16; n++){
-    scrapeBIB(n);
+    await scrapeBIB(n);
   }
 }
 
@@ -56,10 +61,12 @@ async function scrapeMR(page) {
               name = clear_name(name);
               city = clear_city(city);
   
-              mrs.push({
-              name: name.toLowerCase(),
-              city: city.toLowerCase()
-              })
+              if ((name != '')&&(city != '')){
+                mrs.push({
+                name: name.toLowerCase(),
+                city: city.toLowerCase()
+                })
+              }
             }
           }
         }
@@ -79,7 +86,7 @@ async function scrapeMR(page) {
             }
           }
         }
-      console.log(mrs);
+      //console.log(mrs);
     });
 }
 
@@ -101,7 +108,7 @@ function clear_city(city) {
 
 async function scrapeAllMR(){
   for (let n = 1; n<156; n++){
-    scrapeMR(n);
+    await scrapeMR(n);
   }
 }
 
@@ -109,3 +116,25 @@ async function scrapeAllMR(){
 
 //----------------INTERSECT-&-REACT----------------\\
 
+async function intersect(){
+  for (const mr of mrs){
+    for (const bib of bibs){
+      if ((mr.name.includes(bib.name))&&(mr.city.includes(bib.city))&&(mr.name != '')){
+        interRest.push(bib);
+      }
+    }
+  }
+}
+
+//----------------MAIN----------------\\
+
+async function main(){
+  await scrapeAllBIB();
+  await scrapeAllMR();
+
+  await intersect();
+
+  console.log(await interRest);
+}
+
+main();
